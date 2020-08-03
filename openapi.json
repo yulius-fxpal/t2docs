@@ -1,0 +1,200 @@
+{
+    "openapi": "3.0.0",
+    "servers": [
+       {
+          "url": "https://api.t2gp.take2games.com",
+          "description": "Production server (uses live data)"
+       },
+       {
+          "url": "https://api-int.t2gp.take2games.com",
+          "description": "Integration Server (uses staged data)"
+       }
+    ],
+    "info": {
+       "description": "T2GP Commerce API",
+       "version": "1.0.0",
+       "title": "Commerce API",
+       "contact": {
+          "email": "ml.leong@take2games.com"
+       }
+    },
+    "tags": [
+       {
+          "name": "public",
+          "description": "available for public use"
+       }
+    ],
+    "paths": {
+       "/skus/items/{itemid}": {
+          "get": {
+             "tags": [
+                "public"
+             ],
+             "summary": "Get Sku(s) by Item Id(s)",
+             "operationId": "getSkus",
+             "description": "Query for available Sku(s) for sale by Item Id. This API supports bulk queries of up to 10 items at a time, using comma to seperate the item ids.\n",
+             "parameters": [
+                {
+                   "in": "path",
+                   "name": "itemid",
+                   "description": "a list of item Id(s) to search for",
+                   "required": true,
+                   "schema": {
+                      "type": "array",
+                      "items": {
+                         "type": "string"
+                      },
+                      "minItems": 1,
+                      "maxItems": 10
+                   }
+                }
+             ],
+             "responses": {
+                "200": {
+                   "description": "Returns an array of SkuPrice(s) matching the item Id(s) requested. Note that if the item requested does not exist, the query would just omit them from the result set, hence the returned values could be a subset of the requested items. Consequently, if all item(s) requested could not be found, the response is an empty array.",
+                   "content": {
+                      "application/json": {
+                         "schema": {
+                            "type": "array",
+                            "items": {
+                               "$ref": "#/components/schemas/SkuPrice"
+                            }
+                         }
+                      }
+                   }
+                }
+             }
+          }
+       }
+    },
+    "components": {
+       "schemas": {
+          "SkuPrice": {
+             "type": "object",
+             "required": [
+                "itemId",
+                "itemTitle",
+                "releaseDate",
+                "preorderDate",
+                "preloadDate"
+             ],
+             "properties": {
+                "itemId": {
+                   "type": "string",
+                   "format": "byte",
+                   "example": "5Cb4zz06AmALbklUyfPyD"
+                },
+                "itemTitle": {
+                   "type": "string",
+                   "example": "Kerbal Space Program (Steam)"
+                },
+                "itemSkuId": {
+                   "type": "string",
+                   "example": "123456",
+                   "description": "Mdm short item number"
+                },
+                "xsollaProjectId": {
+                   "type": "string",
+                   "example": "654321",
+                   "description": "Xsolla Project Id"
+                },
+                "currency": {
+                   "type": "string",
+                   "example": "USD",
+                   "description": "ISO 4217 Currency Code"
+                },
+                "originalPrice": {
+                   "type": "number",
+                   "format": "double",
+                   "example": 59.99
+                },
+                "salePrice": {
+                   "type": "number",
+                   "format": "double",
+                   "example": 39.99,
+                   "description": "If there is no discount, salePrice == originalPrice"
+                },
+                "drm": {
+                   "type": "string",
+                   "enum": [
+                      "Steam",
+                      "DRM Free",
+                      "Epic",
+                      "Playstation",
+                      "Xbox",
+                      "Nintendo Switch",
+                      "Rockstar Games Launcher"
+                   ]
+                },
+                "promotion": {
+                   "$ref": "#/components/schemas/SkuPromotion"
+                },
+                "externalSiteLink": {
+                   "type": "string",
+                   "format": "url",
+                   "example": "https://store.playstation.com/en-us/product/UP4581-CUSA15719_00-DISINTEGRATION01",
+                   "description": "link to first party store for non direct sales"
+                },
+                "releaseDate": {
+                   "type": "number",
+                   "format": "int64",
+                   "example": 1592280000,
+                   "description": "unix epoch time in seconds. 0 if released, non-zero if its a release date in future"
+                },
+                "preorderDate": {
+                   "type": "number",
+                   "format": "int64",
+                   "example": 0,
+                   "description": "unix epoch time in seconds. 0 if no pre-order date"
+                },
+                "preloadDate": {
+                   "type": "number",
+                   "format": "int64",
+                   "example": 0,
+                   "description": "unix epoch time in seconds. 0 if no preload date"
+                }
+             }
+          },
+          "SkuPromotion": {
+             "required": [
+                "percent",
+                "amt",
+                "reason",
+                "start",
+                "end"
+             ],
+             "properties": {
+                "percent": {
+                   "type": "number",
+                   "format": "double",
+                   "example": 15,
+                   "description": "percentage of discount off"
+                },
+                "amt": {
+                   "type": "number",
+                   "format": "double",
+                   "example": 20,
+                   "description": "discounted amount off"
+                },
+                "reason": {
+                   "type": "string",
+                   "example": "Kerbal Spring Sale",
+                   "description": "reason code for promotion, can be used as a key into a localized text"
+                },
+                "start": {
+                   "type": "number",
+                   "format": "int64",
+                   "example": 1592280000,
+                   "description": "unix epoch time in seconds. When promotion starts. SkuPromotion object will only exists if there is a promotion and the start date is in the past, and the end date is still in the future"
+                },
+                "end": {
+                   "type": "number",
+                   "format": "int64",
+                   "example": 1602280000,
+                   "description": "unix epoch time in seconds. When promotion ends. If the current time is past end, then the SkuPromotion object will be null"
+                }
+             }
+          }
+       }
+    }
+ }
