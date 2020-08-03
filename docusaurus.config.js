@@ -1,7 +1,7 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Take-Two Commerce API',
+  tagline: 'Take-Two Commerce API',
+  url: 'https://t2.yuli.us',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   favicon: 'img/favicon.ico',
@@ -9,9 +9,9 @@ module.exports = {
   projectName: 'docusaurus', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'Take-Two Commerce API',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'Take-Two Commerce API',
         src: 'img/logo.svg',
       },
       items: [
@@ -82,7 +82,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Take Two Interactive, Inc.`,
     },
   },
   presets: [
